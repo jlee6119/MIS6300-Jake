@@ -23,19 +23,16 @@ ORDER BY OrderDate
 
 /*2. Display the total amount collected after selling the products, 774 and 777. */
 
-SELECT h.SalesOrderID
-		,d.ProductID
-		,d.OrderQty
-		,d.UnitPrice
-		,d.UnitPriceDiscount
-		,d.LineTotal
+SELECT d.ProductID
+		,sum(d.OrderQty) AS 'Total Order Qty'
+		,sum(d.LineTotal) AS 'Total Amount'
 
 FROM Sales.SalesOrderHeader AS h
 		,Sales.SalesOrderDetail AS d
 
 WHERE h.SalesOrderId = d.SalesOrderID AND d.ProductID in(774, 777)
 
-ORDER BY SalesOrderID
+GROUP BY d.ProductID
 
 
 /*3. Write a query to display the sales person ID of all the sales persons and the name of the territory to which they belong.*/
@@ -72,13 +69,12 @@ WHERE cc.CardType LIKE 'Vista' AND  pc.CreditCardId = cc.CreditCardID AND p.Busi
 /*5, Write a query to display all the country region codes along with their corresponding territory IDs*/
 
 SELECT t.TerritoryID
-		,t.CountryRegionCode
+		,c.CountryRegionCode
 		,c.Name
 
 FROM Sales.SalesTerritory AS t
-		,Person.CountryRegion AS c
-
-WHERE t.CountryRegionCode = c.CountryRegionCode
+		RIGHT JOIN Person.CountryRegion AS c
+		ON t.CountryRegionCode = c.CountryRegionCode
 
 
 /*6. Find out the average of the total dues of all the orders.*/
@@ -96,15 +92,3 @@ SELECT SalesOrderID
 FROM Sales.SalesOrderHeader
 
 WHERE TotalDue > (SELECT avg(TotalDue) FROM Sales.SalesOrderHeader)
-
-
-
-
-
-
-
-
-
-
-
-
